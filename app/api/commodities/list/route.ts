@@ -6,8 +6,11 @@ export async function GET(request: Request) {
     const page = searchParams.get("page") || "1";
     const groupFilter = searchParams.get("groupFilter") || "";
 
-    const API_BASE_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5130"
+    const API_BASE_URL = process.env.API_INTERNAL_URL;
+
+    if (!API_BASE_URL) {
+        throw new Error("API_INTERNAL_URL is missing");
+    }
 
     const res = await fetch(
         `${API_BASE_URL}/noodle/commodities?limit=${limit}&page=${page}&groupFilter=${groupFilter}`,
