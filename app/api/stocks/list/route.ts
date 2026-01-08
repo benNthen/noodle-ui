@@ -7,24 +7,17 @@ export async function GET(request: Request) {
     const groupFilter = searchParams.get("groupFilter") || "";
     const search = searchParams.get("search") || "";
 
-    const API_BASE_URL = process.env.API_INTERNAL_URL;
+    const apiInternal = process.env.API_INTERNAL_URL;
+    const backendUrl = `${apiInternal}/noodle/stocks?limit=${limit}&page=${page}&groupFilter=${groupFilter}&search=${search}`;
+    const res = await fetch(backendUrl, {
+        cache: "no-store",
+    });
 
-    if (!API_BASE_URL) {
-        throw new Error("API_INTERNAL_URL is missing");
-    }
-
-    const res = await fetch(
-        `${API_BASE_URL}/noodle/stocks?limit=${limit}&page=${page}&groupFilter=${groupFilter}&search=${search}`,
-        {
-            headers: { "Content-Type": "application/json" },
-            cache: "no-store",
-        }
-    );
+    const text = await res.text();
+    console.log("⬅️ RAW RESPONSE:", text);
 
     if (!res.ok) {
-        return NextResponse.json({ error: "Failed to fetch stocks" }, { status: res.status });
+        throw new Error(`Backend error ${res.status}: ${text}`);
     }
-
-    const data = await res.json();
-    return NextResponse.json(data);
+    return NextResponse.json(JSON.parse(text));
 }

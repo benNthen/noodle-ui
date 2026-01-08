@@ -7,27 +7,17 @@ export async function GET(req: NextRequest) {
     const limit = searchParams.get("limit") || "20"
     const page = searchParams.get("page") || "1"
 
-    const API_BASE_URL = process.env.API_INTERNAL_URL;
-
-    if (!API_BASE_URL) {
-        throw new Error("API_INTERNAL_URL is missing");
-    }
-
-    const url = `${API_BASE_URL}/noodle/stablecoins?q=${q}&limit=${limit}&page=${page}`
-
-    const res = await fetch(url, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
+    const apiInternal = process.env.API_INTERNAL_URL;
+    const backendUrl = `${apiInternal}/noodle/stablecoins?q=${q}&limit=${limit}&page=${page}`;
+    const res = await fetch(backendUrl, {
         cache: "no-store",
-    })
+    });
+
+    const text = await res.text();
+    console.log("⬅️ RAW RESPONSE:", text);
 
     if (!res.ok) {
-        return NextResponse.json(
-            { message: "Failed to fetch stablecoins" },
-            { status: res.status }
-        )
+        throw new Error(`Backend error ${res.status}: ${text}`);
     }
-
-    const data = await res.json()
-    return NextResponse.json(data)
+    return NextResponse.json(JSON.parse(text));
 }
