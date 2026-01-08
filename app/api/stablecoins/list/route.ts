@@ -7,8 +7,11 @@ export async function GET(req: NextRequest) {
     const limit = searchParams.get("limit") || "20"
     const page = searchParams.get("page") || "1"
 
-    const API_BASE_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5130"
+    const API_BASE_URL = process.env.API_INTERNAL_URL;
+
+    if (!API_BASE_URL) {
+        throw new Error("API_INTERNAL_URL is missing");
+    }
 
     const url = `${API_BASE_URL}/noodle/stablecoins?q=${q}&limit=${limit}&page=${page}`
 
