@@ -2,30 +2,33 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const API_BASE_URL = process.env.API_INTERNAL_URL;
+        const apiInternal = process.env.API_INTERNAL_URL;
 
-        if (!API_BASE_URL) {
-            throw new Error("API_INTERNAL_URL is missing");
-        }
-        const backendUrl = `${API_BASE_URL}/noodle/top-growth-commodities`;
+        console.log("🔍 API_INTERNAL_URL =", apiInternal);
+
+        const backendUrl = `${apiInternal}/noodle/top-growth-commodities`;
+
+        console.log("➡️ FETCHING:", backendUrl);
 
         const res = await fetch(backendUrl, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            next: { revalidate: 10 },
+            cache: "no-store",
         });
 
+        console.log("⬅️ RESPONSE STATUS:", res.status);
+
+        const text = await res.text();
+        console.log("⬅️ RAW RESPONSE:", text);
+
         if (!res.ok) {
-            throw new Error("Failed to fetch Top Growth Commodities");
+            throw new Error(`Backend error ${res.status}: ${text}`);
         }
 
-        const data = await res.json();
-        return NextResponse.json(data);
-    } catch (error: any) {
+        return NextResponse.json(JSON.parse(text));
+    } catch (err: any) {
+        console.error("❌ ROUTE HANDLER ERROR", err);
+
         return NextResponse.json(
-            { message: error.message || "Internal Server Error" },
+            { message: err.message },
             { status: 500 }
         );
     }

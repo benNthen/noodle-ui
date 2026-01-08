@@ -23,7 +23,6 @@ services:
       - "3000:3000"
     environment:
       - API_INTERNAL_URL=http://noodle-api:5130
-      - NEXT_PUBLIC_API_URL=http://localhost:5130
       - NEXT_PUBLIC_MONGO_URL=mongodb://noodles-mongo:27017/noodles
     depends_on:
       - noodle-api
