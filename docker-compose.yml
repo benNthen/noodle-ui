@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   noodle-api:
     image: mvpstudionz/noodle_api:latest
