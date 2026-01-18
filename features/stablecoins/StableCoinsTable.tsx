@@ -228,7 +228,7 @@ const StableCoinsTable = () => {
 						<TableHead className="text-[var(--text-table)] border-b-[var(--border)] font-noto font-normal text-xs w-[140px] text-end">Circulating Supply</TableHead>
 						<TableHead className="text-[var(--text-table)] border-b-[var(--border)] font-noto font-normal text-xs">Brief Introduction</TableHead>
 						<TableHead className="text-[var(--text-table)] border-b-[var(--border)] font-noto font-normal text-xs">Backing Mechanism</TableHead>
-						<TableHead className="text-[var(--text-table)] border-b-[var(--border)] font-noto font-normal text-xs w-[120px] text-end">Best Yield</TableHead>
+						{/* <TableHead className="text-[var(--text-table)] border-b-[var(--border)] font-noto font-normal text-xs w-[120px] text-end">Best Yield</TableHead> */}
 						<TableHead className="text-[var(--text-table)] border-b-[var(--border)] font-noto rounded-tr-lg font-normal text-xs w-[164px] text-center">Depegging History</TableHead>
 					</TableRow>
 				</TableHeader>
@@ -378,11 +378,11 @@ const StableCoinsTable = () => {
 								<TableCell className="border-b border-b-[var(--border)] text-xs text-[var(--text)]">
 									{asset?.mechanism || '--'}
 								</TableCell>
-								<TableCell className="border-b border-b-[var(--border)] text-xs text-[var(--text)] text-end">
+								{/* <TableCell className="border-b border-b-[var(--border)] text-xs text-[var(--text)] text-end">
 									{asset?.bestYield
 										? `${asset?.bestYield?.apy.toFixed(2)}%`
 										: '--'}
-								</TableCell>
+								</TableCell> */}
 								<TableCell className="border-b border-b-[var(--border)] text-xs text-[var(--text)] text-center">
 									{asset?.depeggingHistory || 'Unknown'}
 								</TableCell>
