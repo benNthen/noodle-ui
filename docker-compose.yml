@@ -8,7 +8,6 @@ services:
       - ASPNETCORE_URLS=http://0.0.0.0:5130
       - ASPNETCORE_ENVIRONMENT=Development
       - MONGO_URL=mongodb://noodles-mongo:27017/noodles
-      - DOTNET_RUNNING_IN_CONTAINER=true
     depends_on:
       - noodles-mongo
     restart: unless-stopped
