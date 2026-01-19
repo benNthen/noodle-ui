@@ -251,7 +251,7 @@ const StableCoinsTable = () => {
 					{isLoading &&
 						Array.from({ length: 6 }).map((_, i) => (
 							<TableRow key={i} className="animate-pulse">
-								{Array.from({ length: 11 }).map((_, j) => (
+								{Array.from({ length: 10 }).map((_, j) => (
 									<TableCell
 										key={j}
 										className="py-4 h-[73px] border-b border-b-[var(--border)]"
