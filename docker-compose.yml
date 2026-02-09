@@ -61,6 +61,7 @@ services:
       - noodles-mongo
     networks:
       - noodle-network
+
   mongo-sync-service:
     build: ../mongo-sync-service
     container_name: mongo-sync-service
@@ -70,13 +71,13 @@ services:
     networks:
       - noodle-network
     environment:
-      - SOURCE_DB_URI: mongodb://data_warehouse_user:3r7od24m5Wx426edHghpB0gNB@207.148.122.148:27017/?authSource=BitCountry-Warehouse
-      - SOURCE_DB_NAME: BitCountry-Warehouse
+      SOURCE_DB_URI: mongodb://data_warehouse_user:3r7od24m5Wx426edHghpB0gNB@207.148.122.148:27017/?authSource=BitCountry-Warehouse
+      SOURCE_DB_NAME: BitCountry-Warehouse
 
-      - TARGET_DB_URI: mongodb://noodles-mongo:27017
-      - TARGET_DB_NAME: noodles
+      TARGET_DB_URI: mongodb://noodles-mongo:27017
+      TARGET_DB_NAME: noodles
 
-      - SYNC_COLLECTIONS: user,ai_conversations,token_favorite,user_activity_logs,v4_x_tweets,v5_reddit_post_engagement,v3_x_tweets,v3_x_users,v4_github_recent_commits,v4_youtube_videos,commodities,stocks
+      SYNC_COLLECTIONS: user,ai_conversations,token_favorite,user_activity_logs,v4_x_tweets,v5_reddit_post_engagement,v3_x_tweets,v3_x_users,v4_github_recent_commits,v4_youtube_videos,commodities,stocks
 
 volumes:
   mongo_data:
