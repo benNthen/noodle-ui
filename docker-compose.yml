@@ -77,7 +77,7 @@ services:
       TARGET_DB_URI: mongodb://noodles-mongo:27017
       TARGET_DB_NAME: noodles
 
-      SYNC_COLLECTIONS: user,ai_conversations,token_favorite,user_activity_logs,v4_x_tweets,v5_reddit_post_engagement,v3_x_tweets,v3_x_users,v4_github_recent_commits,v4_youtube_videos,commodities,stocks
+      SYNC_COLLECTIONS: user,ai_conversations,token_favorite,user_activity_logs,v4_x_tweets,v5_reddit_post_engagement,v3_x_tweets,v3_x_users,v4_github_recent_commits,v4_youtube_videos,commodities,stocks,v2_token,v2_token_overview
 
 volumes:
   mongo_data:
