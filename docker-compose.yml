@@ -5,11 +5,11 @@ services:
     ports:
       - "5130:5130"
     environment:
-      - ASPNETCORE_URLS: http://0.0.0.0:5130
-      - ASPNETCORE_ENVIRONMENT: Development
-      - DatabaseSettings__ConnectionString: mongodb://noodles-mongo:27017/noodles
-      - DatabaseSettings__DatabaseName: noodles
-      - DOTNET_RUNNING_IN_CONTAINER: true
+      ASPNETCORE_URLS: http://0.0.0.0:5130
+      ASPNETCORE_ENVIRONMENT: Development
+      DatabaseSettings__ConnectionString: mongodb://noodles-mongo:27017/noodles
+      DatabaseSettings__DatabaseName: noodles
+      DOTNET_RUNNING_IN_CONTAINER: true
     depends_on:
       - noodles-mongo
     restart: unless-stopped
@@ -22,8 +22,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - API_INTERNAL_URL: http://noodle-api:5130
-      - NEXT_PUBLIC_MONGO_URL: mongodb://noodles-mongo:27017/noodles
+      API_INTERNAL_URL: http://noodle-api:5130
+      NEXT_PUBLIC_MONGO_URL: mongodb://noodles-mongo:27017/noodles
     depends_on:
       - noodle-api
       - noodles-mongo
@@ -37,7 +37,7 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_DATABASE=noodles
+      MONGO_INITDB_DATABASE: noodles
     command: ["mongod", "--quiet"]
     volumes:
       - mongo_data:/data/db
@@ -52,11 +52,11 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - ME_CONFIG_MONGODB_SERVER: noodles-mongo
-      - ME_CONFIG_MONGODB_PORT: 27017
-      - ME_CONFIG_MONGODB_ENABLE_ADMIN: true
-      - ME_CONFIG_BASICAUTH_USERNAME: admin
-      - ME_CONFIG_BASICAUTH_PASSWORD: admin123
+      ME_CONFIG_MONGODB_SERVER: noodles-mongo
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin123
     depends_on:
       - noodles-mongo
     networks:
