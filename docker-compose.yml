@@ -31,20 +31,6 @@ services:
     networks:
       - noodle-network
 
-  noodles-mongo:
-    image: mongo:7
-    container_name: noodles-mongo
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_DATABASE: noodles
-    command: ["mongod", "--quiet"]
-    volumes:
-      - mongo_data:/data/db
-      - ../mongo-seed:/docker-entrypoint-initdb.d
-    restart: unless-stopped
-    networks:
-      - noodle-network
   mongo-express:
     image: mongo-express
     container_name: mongo-express
@@ -77,7 +63,7 @@ services:
       TARGET_DB_URI: mongodb://noodles-mongo:27017
       TARGET_DB_NAME: noodles
 
-      SYNC_COLLECTIONS: user,ai_conversations,token_favorite,user_activity_logs,v4_x_tweets,v5_reddit_post_engagement,v3_x_tweets,v3_x_users,v4_github_recent_commits,v4_youtube_videos,commodities,stocks,v2_token,v2_token_overview
+      SYNC_COLLECTIONS: v2_token,v2_token_overview,user,ai_conversations,token_favorite,user_activity_logs,v4_x_tweets,v5_reddit_post_engagement,v3_x_tweets,v3_x_users,v4_github_recent_commits,v4_youtube_videos,commodities,stocks
 
 volumes:
   mongo_data:
