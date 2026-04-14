@@ -1,0 +1,32 @@
+import { useMutation } from '@tanstack/react-query'
+import { CLIENT_API_URL } from '@/lib/config'
+
+interface CompareRequest {
+  assetIds: string[]
+  assetType: 'stablecoin' | 'stock' | 'commodity'
+}
+
+export const useCompareStablecoins = () => {
+  return useMutation({
+    mutationFn: async (data: CompareRequest) => {
+      // 1. Build the URL (CLIENT_API_URL + '/compare')
+      // 2. Make POST request with fetch
+      const res = await fetch(CLIENT_API_URL + '/compare', {
+        method: 'POST', // 3. Set method to 'POST'
+        headers: {
+          // 4. Set headers: Content-Type: application/json
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data), // 5. Set body: JSON.stringify(data)
+      })
+
+      // 6. Check if response is ok
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err?.error || 'Failed to compare assets')
+      }
+      // 7. Return response.json()
+      return res.json()
+    },
+  })
+}
