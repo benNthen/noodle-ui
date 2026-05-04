@@ -1,97 +1,155 @@
-"use client";
+'use client'
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/Dialog";
+import { formatNumberWithCommas } from '@/lib/format'
 
-export default function ComparisonModal({ isOpen, onClose, data }) {
-    if (!isOpen || !data) return null;
+interface ComparisonData {
+  assets: Array<{
+    id: string
+    name: string
+    metrics: { marketCap: number; volume24h: number; price: number }
+  }>
+  summary: {
+    highestMarketCap: string
+    highestVolume: string
+    closestToPeg: string
+  }
+}
 
-    return (
-        <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-[900px] w-full bg-[var(--bg-block)]">
-                <DialogHeader>
-                    <DialogTitle className="text-reddit text-[var(--text)]">
-                        <p className="text-xl font-semibold mb-1">
-                            Comparison Result
-                        </p>
-                        <p className="text-xs font-light">Side-by-side comparison of {data.assets.length} stabelcoins</p>
-                    </DialogTitle>
-                </DialogHeader>
+interface ComparisonModalProps {
+  isOpen: boolean
+  onClose: () => void
+  data: ComparisonData | null
+}
 
-                {/* Grid of cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 border-t border-b py-5">
-                    {data.assets.map((asset) => {
-                        const isWinnerMarketCap =
-                            data.summary.highestMarketCap === asset.id;
+export default function ComparisonModal({
+  isOpen,
+  onClose,
+  data,
+}: ComparisonModalProps) {
+  // Early return if data is null
+  if (!isOpen || !data) return null
 
-                        const isWinnerVolume = data.summary.highestVolume === asset.id;
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-xl w-full max-w-4xl shadow-xl grid grid-rows-[auto_1fr_auto]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* 🔹 Header */}
+        <div className="p-6 border-b flex justify-between items-start">
+          <div>
+            <h1 className="text-xl font-bold text-black">Comparison</h1>
+            <h2 className="text-sm text-gray-500">
+              Side-by-side comparison of stablecoins
+            </h2>
+          </div>
 
-                        const isWinnerPeg = data.summary.closestToPeg === asset.id;
+          <button
+            onClick={onClose}
+            className="text-gray-500 hover:text-black text-lg"
+          >
+            ✕
+          </button>
+        </div>
 
-                        return (
-                            <div
-                                key={asset.id}
-                                className="p-4 rounded-xl border text-[var(--text)]"
-                            >
-                                <p className="font-semibold">{asset.name}</p>
-                                <p className="text-xs opacity-60 mb-2">{asset.id}</p>
+        {/* 🔹 Content (Grid of cards) */}
+        <div className="p-6 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 overflow-y-auto max-h-[60vh]">
+          {data.assets.map((asset) => {
+            const isWinnerMarketCap = data.summary.highestMarketCap === asset.id
 
-                                {/* Market Cap */}
-                                <div className="mt-3">
-                                    <p className="text-sm flex justify-between mb-2">
-                                        <span className="opacity-60">
-                                            Market Cap
-                                        </span>
-                                        {isWinnerMarketCap && (
-                                            <span className="ml-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">
-                                                👑 Highest
-                                            </span>
-                                        )}
-                                    </p>
-                                    <p className="font-medium">${asset.metrics.marketCap.toLocaleString()}</p>
-                                </div>
+            const isWinnerVolume = data.summary.highestVolume === asset.id
 
-                                {/* Volume */}
-                                <div className="mt-3">
-                                    <p className="text-sm flex justify-between mb-2">
-                                        <span className="opacity-60">
-                                            24h Volume
-                                        </span>
-                                        {isWinnerVolume && (
-                                            <span className="ml-2 bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded-full">
-                                                👑 Highest
-                                            </span>
-                                        )}
-                                    </p>
-                                    <p className="font-medium">${asset.metrics.volume24h.toLocaleString()}</p>
-                                </div>
+            const isWinnerPeg = data.summary.closestToPeg === asset.id
 
-                                {/* Price */}
-                                <div className="mt-2">
-                                    <p className="text-sm flex justify-between mb-2">
-                                        <span className="opacity-60">Price</span>
-                                        {isWinnerPeg && (
-                                            <span className="ml-2 bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded-full">
-                                                👑 Best Peg
-                                            </span>
-                                        )}
-                                    </p>
-                                    <p className="font-medium">${asset.metrics.price}</p>
-                                </div>
-                            </div>
-                        );
-                    })}
+            console.log('PEG check:', {
+              closestToPeg: data.summary.closestToPeg,
+              assetId: asset.id,
+              assetName: asset.name,
+            })
+
+            return (
+              <div key={asset.id} className="border rounded-lg p-4 shadow-sm">
+                <h3 className="font-semibold text-black">{asset.name}</h3>
+                <p className="text-xs text-gray-500 mb-2">{asset.id}</p>
+
+                {/* Market Cap */}
+                <div className="mb-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm text-gray-500 mb-2">Market Cap</p>
+
+                    {isWinnerMarketCap && (
+                      <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
+                        👑 Highest
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-gray-500">
+                    ${formatNumberWithCommas(asset.metrics.marketCap)}
+                  </p>
                 </div>
 
-                {/* Footer */}
-                <div className="text-end">
-                    <button
-                        onClick={onClose}
-                        className="px-5 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
-                    >
-                        Close
-                    </button>
+                {/* 24H Volume */}
+                <div className="mb-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm text-gray-500">24h Volume</p>
+
+                    {isWinnerVolume && (
+                      <span className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
+                        👑 Highest
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-gray-500">
+                    {asset.metrics.volume24h}
+                  </p>
                 </div>
-            </DialogContent>
-        </Dialog>
-    );
+
+                {/* PEG */}
+                <div className="mb-2">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-sm text-gray-500">
+                      Price (PEG Stability)
+                    </p>
+
+                    {isWinnerPeg && (
+                      <span className="text-xs bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
+                        👑 Best Peg
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-sm text-gray-500">
+                    ${asset.metrics.price.toFixed(4)}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* 🔹 Footer */}
+        <div className="p-4 border-t flex justify-end">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-black text-white rounded-md hover:opacity-90"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    // RENDER
+    // - Backdrop (fixed overlay with blur)
+    // - Modal container (centered, max width)
+    // - Header (title + close button)
+    // - Grid of comparison cards
+    // - Winner badges for each metric
+    // - Footer with close button
+  )
 }

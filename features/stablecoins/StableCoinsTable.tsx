@@ -185,6 +185,11 @@ const StableCoinsTable = () => {
     sortDir: sortBy === 'default' ? null : sortDir,
   })
 
+  console.log('API data:', data)
+  console.log('API items:', data?.items)
+  console.log('Loading:', isLoading)
+  console.log('Error:', isError, error)
+
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
 
   const handleSortMarketCap = () => {
@@ -200,14 +205,14 @@ const StableCoinsTable = () => {
   const { data: userData } = useMe()
   const { mutate: addLog } = useAddUserActivityLog()
 
-  const rawItems = data?.items ?? [] // get list from API, ?? means "if null/undefined, use empty array instead"
+  const rawItems = data?.data ?? [] // get list from API, ?? means "if null/undefined, use empty array instead"
   const items = [...rawItems].sort((a, b) => {
     const aValue = a.marketCap || 0
     const bValue = b.marketCap || 0
     return sortDirection === 'asc' ? aValue - bValue : bValue - aValue
   })
 
-  const total = data?.total ?? 0
+  const total = data?.pagination?.total ?? 0 // get total count from API response, default to 0 if not available
   const totalPages = Math.ceil(total / LIMIT)
 
   const toggleSort = (field: 'market_cap' | 'price' | 'volume') => {
@@ -233,7 +238,12 @@ const StableCoinsTable = () => {
   }
 
   const handleCompare = () => {
-    if (selectedAssets.length < 2) return
+    console.log('Compare clicked', selectedAssets)
+    console.log('Selected assets:', selectedAssets)
+    if (selectedAssets.length < 2) {
+      console.log('Please select at least 2 assets to compare.')
+      return
+    }
 
     compare(
       {
@@ -241,7 +251,13 @@ const StableCoinsTable = () => {
         assetType: 'stablecoin',
       },
       {
-        onSuccess: () => setShowModal(true),
+        onSuccess: (res) => {
+          console.log('Comparison data:', res)
+          setShowModal(true)
+        },
+        onError: (err) => {
+          console.error('❌ Compare error:', err)
+        },
       },
     )
   }

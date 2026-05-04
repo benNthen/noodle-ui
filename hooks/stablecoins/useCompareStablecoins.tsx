@@ -9,9 +9,12 @@ interface CompareRequest {
 export const useCompareStablecoins = () => {
   return useMutation({
     mutationFn: async (data: CompareRequest) => {
+      const url = `${CLIENT_API_URL}/noodle/compare`
+      console.log('Calling compare API:', url)
+      console.log('CLIENT_API_URL:', CLIENT_API_URL)
       // 1. Build the URL (CLIENT_API_URL + '/compare')
       // 2. Make POST request with fetch
-      const res = await fetch(CLIENT_API_URL + '/compare', {
+      const res = await fetch(url, {
         method: 'POST', // 3. Set method to 'POST'
         headers: {
           // 4. Set headers: Content-Type: application/json
@@ -19,6 +22,9 @@ export const useCompareStablecoins = () => {
         },
         body: JSON.stringify(data), // 5. Set body: JSON.stringify(data)
       })
+
+      console.log('Raw response:', res)
+      console.log('Status:', res.status)
 
       // 6. Check if response is ok
       if (!res.ok) {
